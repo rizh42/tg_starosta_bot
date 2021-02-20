@@ -4,12 +4,11 @@ import commands
 with open('token.txt', 'r') as f:
     TOKEN = f.readline()
 
-# print(TOKEN)
-
 knownUsers = []
 userStep = {}
 
 commands_help = {
+    'help': "Что могу",
     'drive': "Ссылка на гугл диск",
     'cloud': "Ссылка на облако",
     'eu': 'ЭУ',
@@ -60,7 +59,7 @@ def command_help(m):
     for key in commands_help:  # generate help text out of the commands_help dictionary defined at the top
         help_text += "/" + key + ": "
         help_text += commands_help[key] + "\n"
-    help_text += 'По поводу вопросов, багов и предложений писать сюда @rizh42s'
+    help_text += 'По поводу вопросов, багов и предложений писать сюда @rizh42'
     bot.send_message(cid, help_text)  # send the generated help page
 
 
