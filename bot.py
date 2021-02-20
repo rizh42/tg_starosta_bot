@@ -39,14 +39,16 @@ def listener(messages):
 bot = telebot.TeleBot(TOKEN)
 bot.set_update_listener(listener)
 
-
 @bot.message_handler(commands=['start'])
 def command_start(m):
     cid = m.chat.id
+    unique = ''
     if cid not in knownUsers:
         knownUsers.append(cid)
         userStep[cid] = 0
-        bot.send_message(cid, "Привет!\nЯ бот-староста группы ИУ9-41Б")
+        if m.from_user.username == 'maslerk':
+            unique = ', солнце'
+        bot.send_message(cid, "Привет" + unique + "!\nЯ бот-староста группы ИУ9-41Б")
         command_help(m)
     else:
         bot.send_message(cid, "Я тебя уже знаю")
@@ -91,7 +93,13 @@ def command_timetable(m):
 
 @bot.message_handler(func=lambda message: True, content_types=['text'])
 def command_default(m):
-    bot.send_message(m.chat.id, "Ты дурак или да?\nВызови /help чтоб вспомнить что я могу!")
+    if m.text == 'Даша':
+        bot.send_message(m.chat.id, "I love you <3")
+    else:
+        bot.send_message(m.chat.id, "Ты дурак или да?\nВызови /help чтоб вспомнить что я могу!")
 
+@bot.message_handler(func=lambda message: message.text == 'Даша')
+def command_text_hi(m):
+    bot.send_message(m.chat.id, "I love you <3")
 
-bot.polling()
+bot.polling(none_stop=True)
