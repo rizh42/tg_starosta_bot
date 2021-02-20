@@ -1,5 +1,4 @@
 commands.py
 *.txt
 *.jpg
-/__pycache__/
-.gitignore
+__pycache__/
