@@ -1,8 +1,6 @@
 import telebot
 import commands
 
-TOKEN = ''
-
 with open('token.txt', 'r') as f:
     TOKEN = f.readline()
 
@@ -12,11 +10,11 @@ knownUsers = []
 userStep = {}
 
 commands_help = {
-    # 'start' :"Привет!\nЯ - бот-староста ИУ9, здесь ты можешь найти разную полезную инфу",
     'drive': "Ссылка на гугл диск",
     'cloud': "Ссылка на облако",
     'eu': 'ЭУ',
-    'timetable': 'Расписание'
+    'timetable': 'Расписание',
+    'dene': 'Расписание зам. декана'
 }
 
 def get_user_step(uid):
@@ -35,7 +33,6 @@ def listener(messages):
     """
     for m in messages:
         if m.content_type == 'text':
-            # print the sent message to the console
             print(str(m.chat.first_name) +
                   " [" + str(m.chat.id) + "]: " + m.text)
 
@@ -47,17 +44,13 @@ bot.set_update_listener(listener)
 @bot.message_handler(commands=['start'])
 def command_start(m):
     cid = m.chat.id
-    if cid not in knownUsers:  # if user hasn't used the "/start" command yet:
-        # save user id, so you could brodcast messages to all users of this bot later
+    if cid not in knownUsers:
         knownUsers.append(cid)
-        # save user id and his current "command level", so he can use the "/getImage" command
         userStep[cid] = 0
-        bot.send_message(cid, "Hello, stranger, let me scan you...")
-        bot.send_message(cid, "Scanning complete, I know you now")
-        command_help(m)  # show the new user the help page
+        bot.send_message(cid, "Привет!\nЯ бот-староста группы ИУ9-41Б")
+        command_help(m)
     else:
-        bot.send_message(
-            cid, "I already know you, no need for me to scan you again!")
+        bot.send_message(cid, "Я тебя уже знаю")
 
 
 @bot.message_handler(commands=['help'])
@@ -67,17 +60,39 @@ def command_help(m):
     for key in commands_help:  # generate help text out of the commands_help dictionary defined at the top
         help_text += "/" + key + ": "
         help_text += commands_help[key] + "\n"
+    help_text += 'По поводу вопросов, багов и предложений писать сюда @rizh42s'
     bot.send_message(cid, help_text)  # send the generated help page
 
 
-@bot.message_handler(func=lambda message: True)
-def command(message):
-    bot.reply_to(message, message.text)
+@bot.message_handler(commands=['drive'])
+def command_drive(m):
+    cid = m.chat.id
+    bot.send_message(cid, 'Ссылка на гугл диск:\n' + commands.cmds['drive'])
 
+@bot.message_handler(commands=['cloud'])
+def command_cloud(m):
+    cid = m.chat.id
+    bot.send_message(cid, 'Ссылка на облако:\n' + commands.cmds['cloud'])
 
-markup = telebot.types.ReplyKeyboardMarkup(row_width=2)
-itembtn_help = telebot.types.KeyboardButton('help')
-markup.add(itembtn_help)
-#bot.send_message(chat_id, "Choose one letter:", reply_markup=markup)
+@bot.message_handler(commands=['dene'])
+def command_dene(m):
+    cid = m.chat.id
+    bot.send_message(cid, commands.cmds['dene'])
+
+@bot.message_handler(commands=['eu'])
+def command_eu(m):
+    cid = m.chat.id
+    bot.send_message(cid, 'Ссылка на Электронный Университет:\n' + commands.cmds['eu'])
+
+@bot.message_handler(commands=['timetable'])
+def command_timetable(m):
+    cid = m.chat.id
+    bot.send_message(cid, 'Вот твоё расписание:\n')
+    bot.send_photo(cid, open(commands.cmds['timetable'], 'rb'))
+
+@bot.message_handler(func=lambda message: True, content_types=['text'])
+def command_default(m):
+    bot.send_message(m.chat.id, "Ты дурак или да?\nВызови /help чтоб вспомнить что я могу!")
+
 
 bot.polling()
