@@ -46,6 +46,7 @@ def command_start(m):
     if cid not in knownUsers:
         knownUsers.append(cid)
         userStep[cid] = 0
+        #Just sume cute feature
         if m.from_user.username == 'maslerk':
             unique = ', солнце'
         bot.send_message(cid, "Привет" + unique + "!\nЯ бот-староста группы ИУ9-41Б")
