@@ -1,24 +1,12 @@
 import telebot
 #This file with dict of commands I decided not to add to repo
-import data
+import Data
 
 with open('token.txt', 'r') as f:
     TOKEN = f.readline()
 
 knownUsers = []
 userStep = {}
-
-commands_help = {
-    'help': "Что могу",
-    'drive': "Ссылка на гугл диск",
-    'cloud': "Ссылка на облако",
-    'eu': 'ЭУ',
-    'timetable': 'Расписание',
-    'dene': 'Расписание зам. декана',
-    'diff': 'Ссылка на лекцию и диск по ДУ',
-    'teacher \'имя предмета\'' :'Список ФИО всех преподов',
-    'subjects' :'Список имен предметов для предыдущей комманды'
-}
 
 def get_user_step(uid):
     if uid in userStep:
@@ -60,9 +48,9 @@ def command_start(m):
 def command_help(m):
     cid = m.chat.id
     help_text = "Вот что я могу: \n"
-    for key in commands_help:  
+    for key, value in Data.data.items():
         help_text += "/" + key + ": "
-        help_text += commands_help[key] + "\n"
+        help_text += value['info'] + "\n"
     help_text += 'По поводу вопросов, багов и предложений писать сюда @rizh42'
     bot.send_message(cid, help_text)
 
@@ -70,7 +58,7 @@ def command_help(m):
 def command_subjects(m):
     cid = m.chat.id
     keys = ''
-    for key in list(data.teachers.keys()):
+    for key in list(Data.data['subjects']['data'].keys()):
         keys += key+'\n'
     bot.send_message(cid, keys)
 
@@ -79,45 +67,45 @@ def command_teacher(m):
     cid = m.chat.id
     text = m.text.split(" ")
     if len(text) > 1 and text[0] == '/teacher':
-        bot.send_message(cid, data.teachers[text[1]])
+        bot.send_message(cid, Data.data['subjects']['data'][text[1]])
     else:
         bot.send_message(cid, 'Видимо, ты неправильно использовал эту комманду, перечитай /help и попробуй ещё раз!')
 
 @bot.message_handler(commands=['drive'])
 def command_drive(m):
     cid = m.chat.id
-    bot.send_message(cid, 'Ссылка на гугл диск:\n' + data.commands['drive'])
+    bot.send_message(cid, 'Ссылка на гугл диск:\n' + Data.data['drive']['data'])
 
 @bot.message_handler(commands=['cloud'])
 def command_cloud(m):
     cid = m.chat.id
-    bot.send_message(cid, 'Ссылка на облако:\n' + data.commands['cloud'])
+    bot.send_message(cid, 'Ссылка на облако:\n' + Data.data['cloud']['data'])
 
 @bot.message_handler(commands=['dene'])
 def command_dene(m):
     cid = m.chat.id
-    bot.send_message(cid, data.commands['dene'])
+    bot.send_message(cid, Data.data['dene']['data'])
 
 @bot.message_handler(commands=['eu'])
 def command_eu(m):
     cid = m.chat.id
-    bot.send_message(cid, 'Ссылка на Электронный Университет:\n' + data.commands['eu'])
+    bot.send_message(cid, Data.data['eu']['data'])
 
 @bot.message_handler(commands=['timetable'])
 def command_timetable(m):
     cid = m.chat.id
     bot.send_message(cid, 'Вот твоё расписание:\n')
-    bot.send_photo(cid, open(data.commands['timetable'], 'rb'))
+    bot.send_photo(cid, open(Data.data['timetable']['data'], 'rb'))
 
 @bot.message_handler(commands=['diff'])
 def command_diff(m):
     cid = m.chat.id
-    bot.send_message(cid, 'Диск с записями лекций:\n' + data.commands['diff']['drive'] + data.commands['diff']['zoom'])
+    bot.send_message(cid, Data.data['diff']['data'])
 
 @bot.message_handler(func=lambda message: True, content_types=['text'])
 def command_default(m):
     if m.from_user.username == '':
-        bot.send_message(m.chat.id, "I love you <3\nЛучше напиши мне в личку)))")
+        bot.send_message(m.chat.id, "I love you <3\nЛучше напиши мне в личку)))\nНу или ты неправильно воспользовалась командой)))")
     else:
         bot.send_message(m.chat.id, "Ты дурак или да?\nВызови /help чтоб вспомнить что я могу!")
 

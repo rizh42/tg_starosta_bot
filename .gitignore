@@ -1,4 +1,4 @@
-data.py
+Data.py
 *.txt
 *.jpg
 __pycache__/
