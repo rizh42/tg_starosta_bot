@@ -6,3 +6,5 @@ It provides:
   - Electronic university
 - Working hours of the Deputy Dean
 - Schedule of classes
+
+Used https://github.com/eternnoir/pyTelegramBotAPI
