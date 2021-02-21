@@ -48,7 +48,7 @@ def command_start(m):
         knownUsers.append(cid)
         userStep[cid] = 0
         #Just sume cute feature
-        if m.from_user.username == 'maslerk':
+        if m.from_user.username == '':
             unique = ', солнце'
         bot.send_message(cid, "Привет" + unique + "!\nЯ бот-староста группы ИУ9-41Б")
         command_help(m)
@@ -116,7 +116,7 @@ def command_diff(m):
 
 @bot.message_handler(func=lambda message: True, content_types=['text'])
 def command_default(m):
-    if m.from_user.username == 'maslerk':
+    if m.from_user.username == '':
         bot.send_message(m.chat.id, "I love you <3\nЛучше напиши мне в личку)))")
     else:
         bot.send_message(m.chat.id, "Ты дурак или да?\nВызови /help чтоб вспомнить что я могу!")
